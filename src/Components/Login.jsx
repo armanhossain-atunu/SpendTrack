@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
 import Logo from './Logo';
 import SocialLogin from './SocialLogin';
+import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router';
 
 
 
@@ -13,12 +15,24 @@ const Login = () => {
         formState: { errors },
         reset,
     } = useForm();
-
+    const navigate = useNavigate();
+    const { loginUser } = useAuth()
     const onSubmit = (data) => {
-        toast.success('Login successful!');
+
         console.log(data);
-        // Add your login logic here
-        reset();
+        loginUser(data.email, data.password)
+            .then(result => {
+                console.log(result.user);
+                toast.success('Login successful!');
+                reset();
+                navigate('/home');
+
+            })
+            .catch(error => {
+                console.log(error.message);
+                toast.error(error.message);
+            })
+
     };
 
     return (
@@ -44,7 +58,7 @@ const Login = () => {
                             type="password"
                             placeholder="Enter your password"
                             className='border py-1.5 px-3 rounded focus:border-[#10B981] focus:outline-none'
-                            {...register('password', { required: 'Password is required' })}
+                            {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' }, pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, message: 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character' } })}
                         />
                         {errors.password && <span style={{ color: 'red' }}>{errors.password.message}</span>}
                     </div>
