@@ -1,6 +1,5 @@
 
-import Login from './Components/Login'
-import Logo from './Components/Logo'
+
 import Register from './Components/Register'
 
 function App() {
@@ -9,8 +8,8 @@ function App() {
   return (
     <>
    
-      <div className='flex justify-center items-center h-screen'>
-        <Login></Login>
+      <div className='flex justify-center items-center min-h-screen bg-base-200'>
+       
         <Register></Register>
       </div>
     </>
