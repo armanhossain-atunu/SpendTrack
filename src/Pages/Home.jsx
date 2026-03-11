@@ -1,16 +1,13 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
+import Header from '../Components/Header';
 
 const Home = () => {
-    const { user,logout } = useAuth();
+    const { user} = useAuth();
     console.log(user);
     return (
         <div>
-            <h1>Home</h1>
-            <p>{user.displayName}</p>
-            <p>{user.email}</p>
-           <img className='w-12 h-12 rounded-full' src={user.photoURL} alt="" />
-           <button className='btn' onClick={logout}>Logout</button>
+           <Header></Header>
         </div>
     );
 };

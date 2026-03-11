@@ -34,18 +34,17 @@ const Login = () => {
             })
 
     };
-    const handleGoogleLogin = () => {
-        loginGoogle()
-            .then(result => {
-                console.log(result.user);
-                toast.success('Login successful!');
-                navigate('/home');
-            })
-            .catch(error => {
-                console.log(error.message);
-                toast.error(error.message);
-            })
-    }
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await loginGoogle();
+            console.log(result.user);
+            toast.success('Login successful!');
+            navigate('/home');
+        } catch (error) {
+            console.error(error.message);
+            toast.error(error.message);
+        }
+    };
 
     return (
 

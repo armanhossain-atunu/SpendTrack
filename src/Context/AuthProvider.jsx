@@ -5,6 +5,7 @@ import { auth } from '../Firebase/Firebase.init';
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const registerUser = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password);
     }
@@ -29,11 +30,13 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
+            setLoading(false);
         });
         return () => unsubscribe();
     })
     const authInfo = {
         user,
+        loading,
         registerUser,
         loginUser,
         loginGoogle,

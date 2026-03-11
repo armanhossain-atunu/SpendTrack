@@ -3,6 +3,7 @@ import Login from "../Components/Login";
 import Register from "../Components/Register";
 import Home from "../Pages/Home";
 import ProtectedRoute from "./ProtectedRoute";
+import NotFound from "../Pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
   {
     path: "/home",
     element: <ProtectedRoute><Home /></ProtectedRoute>,
+  },
+  {
+    path: "*",
+    element: <NotFound></NotFound>
   }
 
 ]);
