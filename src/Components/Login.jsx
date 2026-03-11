@@ -16,7 +16,7 @@ const Login = () => {
         reset,
     } = useForm();
     const navigate = useNavigate();
-    const { loginUser } = useAuth()
+    const { loginUser, loginGoogle } = useAuth()
     const onSubmit = (data) => {
 
         console.log(data);
@@ -34,6 +34,18 @@ const Login = () => {
             })
 
     };
+    const handleGoogleLogin = () => {
+        loginGoogle()
+            .then(result => {
+                console.log(result.user);
+                toast.success('Login successful!');
+                navigate('/home');
+            })
+            .catch(error => {
+                console.log(error.message);
+                toast.error(error.message);
+            })
+    }
 
     return (
 
@@ -68,7 +80,7 @@ const Login = () => {
                     </div>
                 </form>
                 <p>Don't have an account? <a href="/register" className='text-[#10B981]'>Register</a></p>
-                <SocialLogin></SocialLogin>
+                <SocialLogin handleGoogleLogin={handleGoogleLogin}></SocialLogin>
 
             </div>
         </div>

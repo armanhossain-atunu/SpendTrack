@@ -1,37 +1,44 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-
 import Logo from './Logo';
 import SocialLogin from './SocialLogin';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate } from 'react-router';
 
 const Register = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const navigate = useNavigate();
-    const { registerUser } = useAuth()
-    const onSubmit = (data) => {
+    const { registerUser, loginGoogle, userUpdate } = useAuth();
 
-        console.log(data);
-        // Add your registration logic here
-        registerUser(data.email, data.password)
-            .then(result => {
-                console.log(result.user);
+    const onSubmit = async (data) => {
+        try {
+            // Register user with email & password
+            const result = await registerUser(data.email, data.password);
+            console.log(result.user);
 
-                toast.success('Registration successful!');
-                reset();
-                navigate('/');
-            })
-            .catch(error => {
-                console.log(error.message);
-            })
+            // Update user profile (Firebase)
+            await userUpdate(data.name, data.image);
 
+            toast.success('Registration successful!');
+            reset();
+            navigate('/'); // redirect to home
+        } catch (error) {
+            console.error(error.message);
+            toast.error(error.message);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await loginGoogle();
+            console.log(result.user);
+            toast.success('Login successful!');
+            navigate('/home');
+        } catch (error) {
+            console.error(error.message);
+            toast.error(error.message);
+        }
     };
 
     return (
@@ -49,7 +56,7 @@ const Register = () => {
                     />
                     {errors.name && <span className="text-error text-xs">{errors.name.message}</span>}
                 </div>
-                <div >
+                <div>
                     <label>Email:</label>
                     <br />
                     <input
@@ -61,13 +68,13 @@ const Register = () => {
                     {errors.email && <span className="text-error text-xs">{errors.email.message}</span>}
                 </div>
                 <div>
-                    <label>Image:</label>
+                    <label>Image URL</label>
                     <br />
                     <input
-                        type="file"
-                        className="w-full file-input file-input-bordered focus:border-[#10B981] focus:outline-none"
-                        accept="image/*"
-                        {...register('image', { required: 'Image is required' })}
+                        type="url"
+                        placeholder="Enter image URL"
+                        className="w-full input input-bordered focus:border-[#10B981] focus:outline-none"
+                        {...register('image', { required: 'Image URL is required' })}
                     />
                     {errors.image && <span className="text-error text-xs">{errors.image.message}</span>}
                 </div>
@@ -78,15 +85,23 @@ const Register = () => {
                         type="password"
                         placeholder="Enter your password"
                         className="w-full input input-bordered focus:border-[#10B981] focus:outline-none"
-                        {...register('password', { required: 'Password is required', minLength: 8, pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, message: 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character' } })}
+                        {...register('password', { 
+                            required: 'Password is required', 
+                            minLength: { value: 8, message: 'Password must be at least 8 characters' }, 
+                            pattern: { 
+                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, 
+                                message: 'Password must contain lowercase, uppercase, number & special char' 
+                            } 
+                        })}
                     />
                     {errors.password && <span className="text-error text-xs">{errors.password.message}</span>}
-                    {errors.password?.type === 'minLength' && <span className="text-error text-xs">Password must be at least 6 characters</span>}
                 </div>
                 <button className='text-center w-full mt-5 bg-[#10B981] text-white btn hover:opacity-90' type="submit">Register</button>
             </form>
-            <p className="mt-4 text-center">Already have an account? <Link to="/" className="text-[#10B981]">Login</Link></p>
-            <SocialLogin></SocialLogin>
+            <p className="mt-4 text-center">
+                Already have an account? <Link to="/" className="text-[#10B981]">Login</Link>
+            </p>
+            <SocialLogin handleGoogleLogin={handleGoogleLogin}></SocialLogin>
         </div>
     );
 };
