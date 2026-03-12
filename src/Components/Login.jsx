@@ -48,11 +48,11 @@ const Login = () => {
 
     return (
 
-        <div className='flex justify-center items-center min-h-screen bg-base-200'>
-            <div className="max-w-md  mx-auto  bg-base-200 p-4 shadow-md rounded-2xl">
+        <div className='flex justify-center items-center min-h-screen '>
+            <div className="max-w-md mx-auto border p-5 shadow-md rounded-2xl">
                 <Logo></Logo>
                 <h1 className="text-center text-2xl font-bold">Login your account</h1>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form className='space-y-4' onSubmit={handleSubmit(onSubmit)}>
                     <div className='flex flex-col'>
                         <label>Email:</label>
                         <input
@@ -78,7 +78,7 @@ const Login = () => {
                         <button className='text-center w-full mt-5 bg-[#10B981] text-white btn hover:opacity-90' type="submit">Login</button>
                     </div>
                 </form>
-                <p>Don't have an account? <a href="/register" className='text-[#10B981]'>Register</a></p>
+                <p className='text-center mt-3'>Don't have an account? <a href="/register" className='text-[#10B981]'>Register</a></p>
                 <SocialLogin handleGoogleLogin={handleGoogleLogin}></SocialLogin>
 
             </div>
